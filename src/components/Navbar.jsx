@@ -51,9 +51,11 @@ const Navbar = () => {
                 <NavLink to="/cart" className="flex items-center">
                     <div className="relative text-2xl">
                         <FiShoppingCart className={theme ? "text-white" : "text-gray-900"} />
-                        {cart.length > 0 &&
-                            <span className="absolute p-2 -top-1 -right-2 text-xs w-3 h-3 bg-green-600 
-              flex justify-center items-center animate-bounce rounded-full text-white">{cart.length}</span>}
+                        {cart.length > 0 && (
+                            <span className="absolute -top-1 -right-2 min-w-[1.25rem] h-5 px-1 text-xs bg-green-600 flex justify-center items-center animate-bounce rounded-full text-white">
+                              {cart.reduce((sum, i) => sum + (i.quantity ?? 1), 0)}
+                            </span>
+                          )}
                     </div>
 
                 </NavLink>

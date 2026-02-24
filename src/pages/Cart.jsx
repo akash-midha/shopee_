@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
-import { removeall } from "../redux/slices/cartSlice";
-import CartItem from "../components/CartItem"
+import CartItem from "../components/CartItem";
 
 const Cart = () => {
-  const { cart } = useSelector((state) => (state))
+  const { cart } = useSelector((state) => state);
   const [totalAmount, setTotalAmount] = useState(0);
-  const { theme } = useSelector((state) => (state));
+  const { theme } = useSelector((state) => state);
   const navigate = useNavigate();
-  const dispatch = useDispatch();
-
-  const handlecheckout = () => {
-    dispatch(removeall());
-    navigate("/feedback");
-  }
 
   useEffect(() => {
-    cart.length > 0 ? setTotalAmount(cart.reduce((acc, curr) => acc + curr.price, 0).toPrecision(4)) : setTotalAmount(0);
-    // console.log(totalAmount);
+    if (cart.length > 0) {
+      const total = cart.reduce((acc, curr) => acc + (curr.price * (curr.quantity ?? 1)), 0);
+      setTotalAmount(total.toFixed(2));
+    } else {
+      setTotalAmount(0);
+    }
   }, [cart]);
 
   return (
@@ -42,16 +39,21 @@ const Cart = () => {
                 <div className="w-full">
                   <p className="text-green-400 font-semibold uppercase text-xl">Your Cart</p>
                   <p className="text-green-500 uppercase font-semibold text-5xl mb-5">Summary</p>
-                  <span className=" uppercase font-semibold text-gray-400">Total Items: {cart.length}</span>
+                  <span className="uppercase font-semibold text-gray-400">
+                    Total Items: {cart.reduce((sum, i) => sum + (i.quantity ?? 1), 0)}
+                  </span>
                 </div>
 
-
-
                 <div className="">
-                  <p className="font-semibold text-xl text-gray-400">Total Amount: <span className="font-bold text-black">${(totalAmount)}</span></p>
-                  <button className="mt-5 text-xl rounded-lg text-green-500 border-2 w-full py-2 border-green-600 hover:bg-green-700 hover:text-white
-                transition duration-500 ease-in-out font-semibold"
-                    onClick={handlecheckout}>Checkout</button>
+                  <p className="font-semibold text-xl text-gray-400">
+                    Total Amount: <span className="font-bold text-black">${totalAmount}</span>
+                  </p>
+                  <button
+                    className="mt-5 text-xl rounded-lg text-green-500 border-2 w-full py-2 border-green-600 hover:bg-green-700 hover:text-white transition duration-500 ease-in-out font-semibold"
+                    onClick={() => navigate("/checkout")}
+                  >
+                    Proceed to checkout
+                  </button>
                 </div>
 
               </div>
